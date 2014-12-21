@@ -81,6 +81,7 @@ public class BoggleSolver {
     private Stack<Node>[][] cached;
     private SET<String> words;
     private Stack<Node> bt;
+    private BoggleBoard board;
 
     private static class Node {
         private int row;
@@ -116,6 +117,7 @@ public class BoggleSolver {
      * @return Words
      */
     public Iterable<String> getAllValidWords(BoggleBoard board) {
+        this.board = board;
         cached = new Stack[board.rows()][board.cols()];
         for (int row = 0; row < board.rows(); row++) {
             for (int col = 0; col < board.cols(); col++) {
@@ -140,7 +142,7 @@ public class BoggleSolver {
         words = new SET<String>();
         for (int row = 0; row < board.rows(); row++)
             for (int col = 0; col < board.cols(); col++)
-                dfs(row, col, board);
+                dfs(row, col);
 
 //        dfs(3, 1, words, board);
         return words;
@@ -153,20 +155,23 @@ public class BoggleSolver {
      */
     private Stack<Node> getNbrs(int row, int col) {
 
-        return cached[row][col];
+        Stack <Node> copy = new Stack<Node>();
+        for(Node nb: cached[row][col])
+            copy.push(nb);
+        return copy;
     }
 
     /**
      *
      * @param row Row
      * @param col Col
-     * @param board Board
      */
-    private void dfs(int row, int col, BoggleBoard board) {
+    private void dfs(int row, int col) {
         String prefix, sprefix, prev;
 
-
-        for (Node nb : getNbrs(row, col)) {
+        Stack<Node> nbrs = getNbrs(row, col);
+        while (nbrs.size() > 0) {
+            Node nb = nbrs.pop();
             if (marked[nb.row][nb.col])
                 continue;
 
@@ -195,7 +200,8 @@ public class BoggleSolver {
             if (bt.size() > 0)
                 for (Node n : bt)
                     marked[n.row][n.col] = true;
-            dfs(nb.row, nb.col, board);
+
+            dfs(nb.row, nb.col);
 
             Node pnb = bt.pop();
             marked[pnb.row][pnb.col] = false;
