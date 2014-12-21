@@ -167,7 +167,6 @@ public class BoggleSolver {
         bt.push(nb);
 
         while (bn.size() > 0) {
-
             while (nbrs.size() == 0 && bn.size() > 0) {
                 nbrs = bn.peek();
                 if (nbrs.size() == 0) {
@@ -175,7 +174,6 @@ public class BoggleSolver {
                     bt.pop();
                 }
             }
-
             if (bn.size() == 0)
                 break;
 
@@ -196,9 +194,7 @@ public class BoggleSolver {
             prefix = prev + Character.toString(board.getLetter(nb.row, nb.col));
             sprefix = prefix.replace("Q", "QU");
 
-
             Iterable<String> keys = dict.keysWithPrefix(sprefix);
-
             if (!keys.iterator().hasNext())
                 continue;
 
@@ -233,7 +229,7 @@ public class BoggleSolver {
         int score = 0;
         int counter = 0;
         for (String word : solver.getAllValidWords(board)) {
-            //StdOut.println(word);
+            StdOut.println(word);
             score += solver.scoreOf(word);
             counter++;
         }
