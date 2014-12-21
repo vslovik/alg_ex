@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * Your task. Your challenge is to write a Boggle solver
  * that finds all valid words in a given Boggle board,
@@ -197,6 +195,7 @@ public class BoggleSolver {
 
             prefix = prev + Character.toString(board.getLetter(nb.row, nb.col));
             sprefix = prefix.replace("Q", "QU");
+
 
             Iterable<String> keys = dict.keysWithPrefix(sprefix);
 
