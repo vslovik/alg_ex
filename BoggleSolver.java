@@ -78,7 +78,6 @@ public class BoggleSolver {
 
     private TrieSET dSET;
     private boolean[][] marked;
-    private Stack<Node>[][] cached;
     private BoggleBoard board;
     private SET<String> words;
     private Stack<Node> bt;
@@ -120,27 +119,11 @@ public class BoggleSolver {
      */
     public Iterable<String> getAllValidWords(BoggleBoard board) {
         this.board = board;
-        cached = new Stack[board.rows()][board.cols()];
-        for (int row = 0; row < board.rows(); row++) {
-            for (int col = 0; col < board.cols(); col++) {
-
-                cached[row][col] = new Stack<Node>();
-
-                for (int i = Math.max(0, row - 1); i <= Math.min(board.rows() - 1, row + 1); i++) {
-                    for (int j = Math.max(0, col - 1); j <= Math.min(board.cols() - 1, col + 1); j++) {
-                        if (i == row && j == col) continue;
-                        Node node = new Node();
-                        node.row = i;
-                        node.col = j;
-                        cached[row][col].push(node);
-                    }
-                }
-            }
-        }
-
         words = new SET<String>();
         bt = new Stack<Node>();
         bn = new Stack<Stack<Node>>();
+        marked = new boolean[board.rows()][board.cols()];
+
         for (int row = 0; row < board.rows(); row++)
             for (int col = 0; col < board.cols(); col++)
                 dfs(row, col);
@@ -157,25 +140,24 @@ public class BoggleSolver {
      */
     private Stack<Node> getNbrs(int row, int col) {
 
-        Stack<Node> copy = new Stack<Node>();
-        for (Node node : cached[row][col]) {
-            copy.push(node);
-            marked[node.row][node.col] = false;
+        Stack<Node> nbrs = new Stack<Node>();
+        for (int i = Math.max(0, row - 1); i <= Math.min(board.rows() - 1, row + 1); i++) {
+            for (int j = Math.max(0, col - 1); j <= Math.min(board.cols() - 1, col + 1); j++) {
+                if (i == row && j == col) continue;
+                Node node = new Node();
+                node.row = i;
+                node.col = j;
+                nbrs.push(node);
+            }
         }
 
-        return copy;
+        return nbrs;
     }
 
 
     private void dfs(int row, int col) {
         Node nb, pnb;
-        String prefix, sprefix;
-
-        marked = new boolean[board.rows()][board.cols()];
-
-
-
-        String prev = Character.toString(board.getLetter(row, col));
+        String prefix, sprefix, prev;
 
         marked[row][col] = true;
         nb = new Node();
@@ -184,7 +166,6 @@ public class BoggleSolver {
         Stack<Node> nbrs = getNbrs(nb.row, nb.col);
         bn.push(nbrs);
         bt.push(nb);
-
 
         while (bn.size() > 0) {
 
