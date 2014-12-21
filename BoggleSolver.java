@@ -76,7 +76,7 @@ import java.util.Arrays;
  */
 public class BoggleSolver {
 
-    private TST<Boolean> dSET;
+    private TST<Boolean> dict;
     private BoggleBoard board;
     private SET<String> words;
     private Stack<Node> bt;
@@ -94,9 +94,9 @@ public class BoggleSolver {
      * @param dictionary Dictionary
      */
     public BoggleSolver(String[] dictionary) {
-        dSET = new TST<Boolean>();
+        dict = new TST<Boolean>();
         for (String word : dictionary)
-            dSET.put(word, true);
+            dict.put(word, true);
     }
 
     /**
@@ -198,10 +198,12 @@ public class BoggleSolver {
             prefix = prev + Character.toString(board.getLetter(nb.row, nb.col));
             sprefix = prefix.replace("Q", "QU");
 
-            if (!dSET.keysWithPrefix(sprefix).iterator().hasNext())
+            Iterable<String> keys = dict.keysWithPrefix(sprefix);
+
+            if (!keys.iterator().hasNext())
                 continue;
 
-            if (sprefix.length() > 2 && dSET.contains(sprefix))
+            if (sprefix.length() > 2 && dict.contains(sprefix))
                 words.add(sprefix);
 
             nbrs = getNbrs(nb.row, nb.col);
@@ -220,7 +222,7 @@ public class BoggleSolver {
      * @return int
      */
     public int scoreOf(String word) {
-        if (dSET.contains(word)) return score(word.length());
+        if (dict.contains(word)) return score(word.length());
         return 0;
     }
 
