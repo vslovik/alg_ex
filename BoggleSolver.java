@@ -79,10 +79,10 @@ public class BoggleSolver {
     private TrieSET dSET;
     private boolean[][] marked;
     private Stack<Node>[][] cached;
+    private BoggleBoard board;
     private SET<String> words;
     private Stack<Node> bt;
     private Stack<Stack<Node>> bn;
-    private BoggleBoard board;
 
     private static class Node {
         private int row;
@@ -111,6 +111,7 @@ public class BoggleSolver {
         else return 11;
     }
 
+
     /**
      * Returns the set of all valid words in the given Boggle board, as an Iterable.
      *
@@ -137,11 +138,9 @@ public class BoggleSolver {
             }
         }
 
-        marked = new boolean[board.rows()][board.cols()];
+        words = new SET<String>();
         bt = new Stack<Node>();
         bn = new Stack<Stack<Node>>();
-        String prev = "";
-        words = new SET<String>();
         for (int row = 0; row < board.rows(); row++)
             for (int col = 0; col < board.cols(); col++)
                 dfs(row, col);
@@ -150,70 +149,85 @@ public class BoggleSolver {
         return words;
     }
 
+
     /**
-     * @param row Row
-     * @param col Col
+     * @param row   Row
+     * @param col   Col
      * @return Stack<Node>
      */
     private Stack<Node> getNbrs(int row, int col) {
 
-        Stack <Node> copy = new Stack<Node>();
-        for(Node nb: cached[row][col])
-            copy.push(nb);
+        Stack<Node> copy = new Stack<Node>();
+        for (Node node : cached[row][col]) {
+            copy.push(node);
+            marked[node.row][node.col] = false;
+        }
+
         return copy;
     }
 
-    /**
-     *
-     * @param row Row
-     * @param col Col
-     */
-    private void dfs(int row, int col) {
-        String prefix, sprefix, prev;
 
-        Stack<Node> nbrs = getNbrs(row, col);
-        while (nbrs.size() > 0) {
-            Node nb = nbrs.pop();
+    private void dfs(int row, int col) {
+        Node nb, pnb;
+        String prefix, sprefix;
+
+        marked = new boolean[board.rows()][board.cols()];
+
+
+
+        String prev = Character.toString(board.getLetter(row, col));
+
+        marked[row][col] = true;
+        nb = new Node();
+        nb.row = row;
+        nb.col = col;
+        Stack<Node> nbrs = getNbrs(nb.row, nb.col);
+        bn.push(nbrs);
+        bt.push(nb);
+
+
+        while (bn.size() > 0) {
+
+            while (nbrs.size() == 0 && bn.size() > 0) {
+                nbrs = bn.peek();
+                if (nbrs.size() == 0) {
+                    nbrs = bn.pop();
+                    pnb = bt.pop();
+                    marked[pnb.row][pnb.col] = false;
+                }
+            }
+
+            if (bn.size() == 0)
+                break;
+
+            nb = nbrs.pop();
             if (marked[nb.row][nb.col])
                 continue;
 
             prev = "";
             if (bt.size() > 0)
-                for (Node n : bt) {
-                    char l = board.getLetter(n.row, n.col);
-                    prev = Character.toString(l) + prev;
-                }
+                for (Node n : bt)
+                    prev = Character.toString(board.getLetter(n.row, n.col)) + prev;
 
-
-            char l = board.getLetter(nb.row, nb.col);
-
-            prefix = prev + Character.toString(l);
+            prefix = prev + Character.toString(board.getLetter(nb.row, nb.col));
             sprefix = prefix.replace("Q", "QU");
+            if (!dSET.keysWithPrefix(sprefix).iterator().hasNext())
+                continue;
 
-            if (dSET.keysWithPrefix(sprefix).iterator().hasNext()) {
+            if (sprefix.length() > 2 && dSET.contains(sprefix))
+                words.add(sprefix);
 
+            marked[nb.row][nb.col] = true;
+            nbrs = getNbrs(nb.row, nb.col);
+            if (bt.size() > 0)
+                for (Node n : bt)
+                    marked[n.row][n.col] = true;
 
-                if (sprefix.length() > 2 && dSET.contains(sprefix))
-                    words.add(sprefix);
+            bn.push(nbrs);
+            bt.push(nb);
 
-                bt.push(nb);
-                bn.push(nbrs);
-
-                marked = new boolean[board.rows()][board.cols()];
-                if (bt.size() > 0)
-                    for (Node n : bt)
-                        marked[n.row][n.col] = true;
-
-                dfs(nb.row, nb.col);
-                //nbrs = getNbrs(nb.row, nb.col);
-
-                Node pnb = bt.pop();
-                bn.pop();
-                marked[pnb.row][pnb.col] = false;
-            }
         }
     }
-
 
     /**
      * Returns the score of the given word if it is in the dictionary, zero otherwise.
@@ -235,7 +249,7 @@ public class BoggleSolver {
         int score = 0;
         int counter = 0;
         for (String word : solver.getAllValidWords(board)) {
-            StdOut.println(word);
+            //StdOut.println(word);
             score += solver.scoreOf(word);
             counter++;
         }
