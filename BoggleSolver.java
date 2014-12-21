@@ -81,6 +81,7 @@ public class BoggleSolver {
     private Stack<Node>[][] cached;
     private SET<String> words;
     private Stack<Node> bt;
+    private Stack<Stack<Node>> bn;
     private BoggleBoard board;
 
     private static class Node {
@@ -138,6 +139,7 @@ public class BoggleSolver {
 
         marked = new boolean[board.rows()][board.cols()];
         bt = new Stack<Node>();
+        bn = new Stack<Stack<Node>>();
         String prev = "";
         words = new SET<String>();
         for (int row = 0; row < board.rows(); row++)
@@ -188,23 +190,27 @@ public class BoggleSolver {
             prefix = prev + Character.toString(l);
             sprefix = prefix.replace("Q", "QU");
 
-            if (!dSET.keysWithPrefix(sprefix).iterator().hasNext())
-                continue;
+            if (dSET.keysWithPrefix(sprefix).iterator().hasNext()) {
 
-            if (sprefix.length() > 2 && dSET.contains(sprefix))
-                words.add(sprefix);
 
-            bt.push(nb);
+                if (sprefix.length() > 2 && dSET.contains(sprefix))
+                    words.add(sprefix);
 
-            marked = new boolean[board.rows()][board.cols()];
-            if (bt.size() > 0)
-                for (Node n : bt)
-                    marked[n.row][n.col] = true;
+                bt.push(nb);
+                bn.push(nbrs);
 
-            dfs(nb.row, nb.col);
+                marked = new boolean[board.rows()][board.cols()];
+                if (bt.size() > 0)
+                    for (Node n : bt)
+                        marked[n.row][n.col] = true;
 
-            Node pnb = bt.pop();
-            marked[pnb.row][pnb.col] = false;
+                dfs(nb.row, nb.col);
+                //nbrs = getNbrs(nb.row, nb.col);
+
+                Node pnb = bt.pop();
+                bn.pop();
+                marked[pnb.row][pnb.col] = false;
+            }
         }
     }
 
