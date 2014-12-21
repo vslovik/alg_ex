@@ -140,7 +140,7 @@ public class BoggleSolver {
         words = new SET<String>();
         for (int row = 0; row < board.rows(); row++)
             for (int col = 0; col < board.cols(); col++)
-                dfs(row, col, board, prev);
+                dfs(row, col, board);
 
 //        dfs(3, 1, words, board);
         return words;
@@ -161,19 +161,22 @@ public class BoggleSolver {
      * @param row Row
      * @param col Col
      * @param board Board
-     * @param prev Prev prefix
      */
-    private void dfs(int row, int col, BoggleBoard board, String prev) {
-        String prefix, sprefix;
+    private void dfs(int row, int col, BoggleBoard board) {
+        String prefix, sprefix, prev;
 
-        marked = new boolean[board.rows()][board.cols()];
-        if (bt.size() > 0)
-            for (Node n : bt)
-                marked[n.row][n.col] = true;
 
         for (Node nb : getNbrs(row, col)) {
             if (marked[nb.row][nb.col])
                 continue;
+
+            prev = "";
+            if (bt.size() > 0)
+                for (Node n : bt) {
+                    char l = board.getLetter(n.row, n.col);
+                    prev = Character.toString(l) + prev;
+                }
+
 
             char l = board.getLetter(nb.row, nb.col);
 
@@ -188,7 +191,11 @@ public class BoggleSolver {
 
             bt.push(nb);
 
-            dfs(nb.row, nb.col, board, prefix);
+            marked = new boolean[board.rows()][board.cols()];
+            if (bt.size() > 0)
+                for (Node n : bt)
+                    marked[n.row][n.col] = true;
+            dfs(nb.row, nb.col, board);
 
             Node pnb = bt.pop();
             marked[pnb.row][pnb.col] = false;
