@@ -92,9 +92,9 @@ public class BoggleSolver {
      * @param dictionary Dictionary
      */
     public BoggleSolver(String[] dictionary) {
-        dict = new TST<Boolean>();
+        this.dict = new TST<Boolean>();
         for (String word : dictionary)
-            dict.put(word, true);
+            this.dict.put(word, true);
     }
 
     /**
@@ -194,11 +194,11 @@ public class BoggleSolver {
             prefix = prev + Character.toString(board.getLetter(nb.row, nb.col));
             sprefix = prefix.replace("Q", "QU");
 
-            Iterable<String> keys = dict.keysWithPrefix(sprefix);
+            Iterable<String> keys = this.dict.keysWithPrefix(sprefix);
             if (!keys.iterator().hasNext())
                 continue;
 
-            if (sprefix.length() > 2 && dict.contains(sprefix))
+            if (sprefix.length() > 2 && this.dict.contains(sprefix))
                 words.add(sprefix);
 
             nbrs = getNbrs(nb.row, nb.col);
@@ -217,7 +217,7 @@ public class BoggleSolver {
      * @return int
      */
     public int scoreOf(String word) {
-        if (dict.contains(word)) return score(word.length());
+        if (this.dict.contains(word)) return score(word.length());
         return 0;
     }
 
