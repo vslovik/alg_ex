@@ -76,8 +76,8 @@ import java.util.Arrays;
  */
 public class BoggleSolver {
 
-    private TrieSET dSET;
-    private boolean[][] marked;
+    //private TrieSET dSET;
+    private TST<Boolean> dSET;
     private BoggleBoard board;
     private SET<String> words;
     private Stack<Node> bt;
@@ -95,10 +95,12 @@ public class BoggleSolver {
      * @param dictionary Dictionary
      */
     public BoggleSolver(String[] dictionary) {
-        dSET = new TrieSET();
-        for (String word : dictionary) {
-            dSET.add(word);
-        }
+        //dSET = new TrieSET();
+//        for (String word : dictionary)
+//            dSET.add(word);
+        dSET = new TST<Boolean>();
+        for (String word : dictionary)
+            dSET.put(word, true);
     }
 
     private int score(int l) {
@@ -122,7 +124,6 @@ public class BoggleSolver {
         words = new SET<String>();
         bt = new Stack<Node>();
         bn = new Stack<Stack<Node>>();
-        marked = new boolean[board.rows()][board.cols()];
 
         for (int row = 0; row < board.rows(); row++)
             for (int col = 0; col < board.cols(); col++)
@@ -156,10 +157,9 @@ public class BoggleSolver {
 
 
     private void dfs(int row, int col) {
-        Node nb, pnb;
+        Node nb;
         String prefix, sprefix, prev;
 
-        marked[row][col] = true;
         nb = new Node();
         nb.row = row;
         nb.col = col;
@@ -173,8 +173,7 @@ public class BoggleSolver {
                 nbrs = bn.peek();
                 if (nbrs.size() == 0) {
                     nbrs = bn.pop();
-                    pnb = bt.pop();
-                    marked[pnb.row][pnb.col] = false;
+                    bt.pop();
                 }
             }
 
@@ -182,27 +181,29 @@ public class BoggleSolver {
                 break;
 
             nb = nbrs.pop();
-            if (marked[nb.row][nb.col])
-                continue;
 
             prev = "";
+            boolean c = false;
             if (bt.size() > 0)
-                for (Node n : bt)
+                for (Node n : bt) {
                     prev = Character.toString(board.getLetter(n.row, n.col)) + prev;
+                    if (n.col == nb.col && n.row == nb.row) {
+                        c = true;
+                        break;
+                    }
+                }
+            if(c) continue;
 
             prefix = prev + Character.toString(board.getLetter(nb.row, nb.col));
             sprefix = prefix.replace("Q", "QU");
+
             if (!dSET.keysWithPrefix(sprefix).iterator().hasNext())
                 continue;
 
             if (sprefix.length() > 2 && dSET.contains(sprefix))
                 words.add(sprefix);
 
-            marked[nb.row][nb.col] = true;
             nbrs = getNbrs(nb.row, nb.col);
-            if (bt.size() > 0)
-                for (Node n : bt)
-                    marked[n.row][n.col] = true;
 
             bn.push(nbrs);
             bt.push(nb);
