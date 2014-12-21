@@ -76,7 +76,6 @@ import java.util.Arrays;
  */
 public class BoggleSolver {
 
-    //private TrieSET dSET;
     private TST<Boolean> dSET;
     private BoggleBoard board;
     private SET<String> words;
@@ -95,14 +94,15 @@ public class BoggleSolver {
      * @param dictionary Dictionary
      */
     public BoggleSolver(String[] dictionary) {
-        //dSET = new TrieSET();
-//        for (String word : dictionary)
-//            dSET.add(word);
         dSET = new TST<Boolean>();
         for (String word : dictionary)
             dSET.put(word, true);
     }
 
+    /**
+     * @param l length
+     * @return score
+     */
     private int score(int l) {
         if (l < 3) return 0;
         else if (l == 3 || l == 4) return 1;
@@ -111,7 +111,6 @@ public class BoggleSolver {
         else if (l == 7) return 5;
         else return 11;
     }
-
 
     /**
      * Returns the set of all valid words in the given Boggle board, as an Iterable.
@@ -129,14 +128,12 @@ public class BoggleSolver {
             for (int col = 0; col < board.cols(); col++)
                 dfs(row, col);
 
-//        dfs(3, 1, words, board);
         return words;
     }
 
-
     /**
-     * @param row   Row
-     * @param col   Col
+     * @param row Row
+     * @param col Col
      * @return Stack<Node>
      */
     private Stack<Node> getNbrs(int row, int col) {
@@ -155,7 +152,10 @@ public class BoggleSolver {
         return nbrs;
     }
 
-
+    /**
+     * @param row Row
+     * @param col Col
+     */
     private void dfs(int row, int col) {
         Node nb;
         String prefix, sprefix, prev;
@@ -163,6 +163,7 @@ public class BoggleSolver {
         nb = new Node();
         nb.row = row;
         nb.col = col;
+
         Stack<Node> nbrs = getNbrs(nb.row, nb.col);
         bn.push(nbrs);
         bt.push(nb);
@@ -192,7 +193,7 @@ public class BoggleSolver {
                         break;
                     }
                 }
-            if(c) continue;
+            if (c) continue;
 
             prefix = prev + Character.toString(board.getLetter(nb.row, nb.col));
             sprefix = prefix.replace("Q", "QU");
