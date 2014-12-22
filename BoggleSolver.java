@@ -92,9 +92,10 @@ public class BoggleSolver {
      * @param dictionary Dictionary
      */
     public BoggleSolver(String[] dictionary) {
-        this.dict = new TST<Boolean>();
+        dict = new TST<Boolean>();
         for (String word : dictionary)
-            this.dict.put(word, true);
+            if (!dict.contains(word))
+                dict.put(word, true);
     }
 
     /**
@@ -156,7 +157,7 @@ public class BoggleSolver {
      */
     private void dfs(int row, int col) {
         Node nb;
-        String prefix, sprefix, prev;
+        String prefix, sprefix, prev, sprev, letter;
 
         nb = new Node();
         nb.row = row;
@@ -180,10 +181,16 @@ public class BoggleSolver {
             nb = nbrs.pop();
 
             prev = "";
+            sprev = "";
             boolean c = false;
             if (bt.size() > 0)
                 for (Node n : bt) {
-                    prev = Character.toString(board.getLetter(n.row, n.col)) + prev;
+                    letter = Character.toString(board.getLetter(n.row, n.col));
+                    if(letter.equals("Q"))
+                        sprev = "QU" + sprev;
+                    else
+                        sprev = letter + sprev;
+                    prev = letter + prev;
                     if (n.col == nb.col && n.row == nb.row) {
                         c = true;
                         break;
@@ -191,15 +198,19 @@ public class BoggleSolver {
                 }
             if (c) continue;
 
-            prefix = prev + Character.toString(board.getLetter(nb.row, nb.col));
-            sprefix = prefix.replace("Q", "QU");
+            letter = Character.toString(board.getLetter(nb.row, nb.col));
+            if(letter.equals("Q"))
+                sprefix = sprev + "QU";
+            else
+                sprefix = sprev + letter;
 
-            Iterable<String> keys = this.dict.keysWithPrefix(sprefix);
-            if (!keys.iterator().hasNext())
-                continue;
-
-            if (sprefix.length() > 2 && this.dict.contains(sprefix))
+            if (sprefix.length() > 2 && dict.contains(sprefix))
                 words.add(sprefix);
+            else {
+                Iterable<String> keys = dict.keysWithPrefix(sprefix);
+                if (!keys.iterator().hasNext())
+                    continue;
+            }
 
             nbrs = getNbrs(nb.row, nb.col);
 
