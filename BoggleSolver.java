@@ -204,9 +204,10 @@ public class BoggleSolver {
             else
                 sprefix = sprev + letter;
 
-            if (sprefix.length() > 2 && dict.contains(sprefix))
-                words.add(sprefix);
-            else {
+            if (dict.contains(sprefix)) {
+                if(sprefix.length() > 2)
+                   words.add(sprefix);
+            } else {
                 Iterable<String> keys = dict.keysWithPrefix(sprefix);
                 if (!keys.iterator().hasNext())
                     continue;
