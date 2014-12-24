@@ -123,6 +123,9 @@ public class BoggleSolver {
         bt = new Stack<Node>();
         bn = new Stack<Stack<Node>>();
 
+        if(board.rows() <= 0 || board.cols() <= 0)
+            throw new IllegalArgumentException("invalid board");
+
         for (int row = 0; row < board.rows(); row++)
             for (int col = 0; col < board.cols(); col++)
                 dfs(row, col);
