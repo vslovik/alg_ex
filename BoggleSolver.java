@@ -120,6 +120,13 @@ public class BoggleSolver {
     public Iterable<String> getAllValidWords(BoggleBoard board) {
         this.board = board;
         words = new SET<String>();
+
+        if(isOneLetterCase())
+        {
+            doOneLetterCaseQueries();
+            return words;
+        }
+
         bt = new Stack<Node>();
         bn = new Stack<Stack<Node>>();
 
@@ -131,6 +138,44 @@ public class BoggleSolver {
                 dfs(row, col);
 
         return words;
+    }
+
+    /**
+     * @return true|false
+     */
+    private boolean isOneLetterCase()
+    {
+        char prev, letter;
+        prev = board.getLetter(0, 0);
+        for (int row = 0; row < board.rows(); row++)
+            for (int col = 0; col < board.cols(); col++) {
+                if(row == 0 && col == 0)
+                    continue;
+                letter = board.getLetter(row, col);
+                if(letter != prev)
+                    return false;
+            }
+        return true;
+    }
+
+    private void doOneLetterCaseQueries()
+    {
+        String letter = Character.toString(board.getLetter(0, 0));
+        String sprefix = "";
+        for (int row = 0; row < board.rows() * board.cols(); row++) {
+            if(letter.equals("Q"))
+                sprefix += "QU";
+            else
+                sprefix += letter;
+            if (dict.contains(sprefix)) {
+                if (sprefix.length() > 2)
+                    words.add(sprefix);
+            } else {
+                Iterable<String> keys = dict.keysWithPrefix(sprefix);
+                if (!keys.iterator().hasNext())
+                    break;
+            }
+        }
     }
 
     /**
@@ -207,7 +252,7 @@ public class BoggleSolver {
             else
                 sprefix = sprev + letter;
 
-            if (dict.contains(sprefix)) {
+            if (dict.longestPrefixOf(sprefix) == sprefix) {
                 if(sprefix.length() > 2)
                    words.add(sprefix);
             } else {
