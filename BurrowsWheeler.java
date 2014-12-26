@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 /**
  * Burrows-Wheeler encoding
@@ -139,6 +138,9 @@ import java.util.Arrays;
  */
 public class BurrowsWheeler {
 
+    // alphabet size of extended ASCII
+    private static final int R = 256;
+
     /**
      * Apply Burrows-Wheeler encoding, reading from standard input and writing to standard output
      */
@@ -146,6 +148,7 @@ public class BurrowsWheeler {
     {
         // read the input
         String s = BinaryStdIn.readString();
+        int N = s.length();
         CircularSuffixArray suffix = new CircularSuffixArray(s);
 
         for(int i = 0; i < suffix.length(); i++)
@@ -155,7 +158,7 @@ public class BurrowsWheeler {
             }
 
         for(int i = 0; i < suffix.length(); i++) {
-            BinaryStdOut.write(s.charAt(suffix.index(i) - 1));
+            BinaryStdOut.write(s.charAt((suffix.index(i) + N - 1) % N));
         }
 
         BinaryStdOut.close();
@@ -166,7 +169,6 @@ public class BurrowsWheeler {
      */
     public static void decode()
     {
-        int R = 256;
         int first = BinaryStdIn.readInt();
         String s = BinaryStdIn.readString();
         int N = s.length();
@@ -175,13 +177,12 @@ public class BurrowsWheeler {
         // the sorted order, we define next[i] to be the row in the sorted order where the (j + 1)st original suffix appears.
         int[] next = new int[N];
 
-        char[] original = new char[N];
         char[] firstColumn = new char[N];
 
-        int[] count = new int[R + 1]; // Remove magic constant
+        int[] count = new int[R + 1];
 
         for (int i = 0;  i < N; i++)
-            count[Character.getNumericValue(input[i]) + 1]++; // check if it works
+            count[input[i] + 1]++; // check if it works
 
         for (int r = 0; r < R; r++)
             count[r + 1] += count[r];
@@ -195,10 +196,11 @@ public class BurrowsWheeler {
 
         int step = first;
         for(int i = 0; i < N; i++) {
-            original[i] = firstColumn[step];
+            BinaryStdOut.write(firstColumn[step]);
             step = next[step];
         }
 
+        BinaryStdOut.close();
     }
 
     /**

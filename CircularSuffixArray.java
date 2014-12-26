@@ -64,7 +64,7 @@ public class CircularSuffixArray {
         Arrays.sort(suffixes);
     }
 
-    private class Suffix {
+    private class Suffix implements Comparable<Suffix>{
 
         private int index;
 
@@ -76,13 +76,17 @@ public class CircularSuffixArray {
         private String getString()
         {
             String str = "";
-            for(int i = 0; i < N; i++){
-                str += s.charAt(i % N);
-            }
+            for(int i = 0; i < N; i++)
+                str += s.charAt((index + i) % N);
 
             return str;
         }
 
+        /**
+         *
+         * @param that That
+         * @return int
+         */
         public int compareTo(Suffix that)
         {
             return this.getString().compareTo(that.getString());
