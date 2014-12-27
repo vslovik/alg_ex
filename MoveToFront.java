@@ -68,14 +68,14 @@ public class MoveToFront {
         BinaryStdOut.write(i, 8);
 
         for (l = 1; l < input.length; l++) {
-            for (i = 0; i < alpha.length; i++)
+            for (i = 0; i < alpha.length; i++) {
                 if (alpha[i] == input[l]) {
                     BinaryStdOut.write(i, 8);
-                    //System.out.println(i & 0xFF);
                     System.arraycopy(alpha, 0, alpha, 1, i);
-                    alpha[0] = alpha[i];
+                    alpha[0] = input[l];
+                    break;
                 }
-
+            }
         }
 
         BinaryStdOut.close();
@@ -105,7 +105,6 @@ public class MoveToFront {
         char i;
         for (i = 0; i < input.length; i++) {
             BinaryStdOut.write(alpha[input[i]], 8);
-            //StdOut.printf("%02x\n", alpha[input[i]] & 0xff);
             System.arraycopy(alpha, 0, alpha, 1, i);
             alpha[0] = alpha[input[i]];
         }
