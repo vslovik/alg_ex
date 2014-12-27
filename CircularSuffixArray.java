@@ -20,8 +20,10 @@ import java.util.Arrays;
  * 9    R A ! A B R A C A D A B     D A B R A ! A B R A C A    6
  * 10   A ! A B R A C A D A B R     R A ! A B R A C A D A B    9
  * 11   ! A B R A C A D A B R A     R A C A D A B R A ! A B    2
- * We define index[i] to be the index of the original suffix that appears ith in the sorted array. For example, index[11] = 2 means that the 2nd original suffix appears 11th in the sorted order (i.e., last alphabetically).
- * Your job is to implement the following circular suffix array API, which provides the client access to the index[] values:
+ * We define index[i] to be the index of the original suffix that appears ith in the sorted array. For example,
+ * index[11] = 2 means that the 2nd original suffix appears 11th in the sorted order (i.e., last alphabetically).
+ * Your job is to implement the following circular suffix array API, which provides the client access to the
+ * index[] values:
  * <p/>
  * CircularSuffixArray
  * <p/>

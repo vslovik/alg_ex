@@ -110,9 +110,14 @@
  * 9    D ? ? ? ? ? ? ? ? ? ? A        2
  * 10   R ? ? ? ? ? ? ? ? ? ? B
  * 11   R ? ? ? ? ? ? ? ? ? ? B
- * However, since 'R' appears twice, it may seem ambiguous whether next[10] = 1 and next[11] = 4, or whether next[10] = 4 and next[11] = 1. Here's the key rule that resolves the apparent ambiguity:
+ * However, since 'R' appears twice, it may seem ambiguous whether next[10] = 1 and next[11] = 4, or whether next[10] =
+ * 4 and next[11] = 1. Here's the key rule that resolves the apparent ambiguity:
  * If sorted row i and j both start with the same character and i < j, then next[i] < next[j].
- * This rule implies next[10] = 1 and next[11] = 4. Why is this rule valid? The rows are sorted so row 10 is lexicographically less than row 11. Thus the ten unknown characters in row 10 must be less than the ten unknown characters in row 11 (since both start with 'R'). We also know that between the two rows that end with 'R', row 1 is less than row 4. But, the ten unknown characters in row 10 and 11 are precisely the first ten characters in rows 1 and 4. Thus, next[10] = 1 and next[11] = 4 or this would contradict the fact that the suffixes are sorted.
+ * This rule implies next[10] = 1 and next[11] = 4. Why is this rule valid? The rows are sorted so row 10 is
+ * lexicographically less than row 11. Thus the ten unknown characters in row 10 must be less than the ten unknown
+ * characters in row 11 (since both start with 'R'). We also know that between the two rows that end with 'R', row 1
+ * is less than row 4. But, the ten unknown characters in row 10 and 11 are precisely the first ten characters in rows
+ * 1 and 4. Thus, next[10] = 1 and next[11] = 4 or this would contradict the fact that the suffixes are sorted.
  * Check that the decoder recovers any encoded message.
  * <p/>
  * % java BurrowsWheeler - < abra.txt | java BurrowsWheeler +
@@ -129,7 +134,9 @@
  * // if args[0] is '+', apply Burrows-Wheeler decoding
  * public static void main(String[] args)
  * }
- * Performance requirements. The running time of your Burrows-Wheeler encoder should be proportional to N + R (or better) in the worst case, excluding the time to construct the circular suffix array. The running time of your Burrows-Wheeler decoder should be proportional to N + R (or better) in the worst case.
+ * Performance requirements. The running time of your Burrows-Wheeler encoder should be proportional to N + R
+ * (or better) in the worst case, excluding the time to construct the circular suffix array. The running time of your
+ * Burrows-Wheeler decoder should be proportional to N + R (or better) in the worst case.
  * <p/>
  * Performance requirements.
  * The running time of your Burrows-Wheeler encoder should be proportional to N + R (or better) in the worst case,

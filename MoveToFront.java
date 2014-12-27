@@ -102,11 +102,12 @@ public class MoveToFront {
         String s = BinaryStdIn.readString();
         char[] input = s.toCharArray();
 
-        char i;
+        char i, first;
         for (i = 0; i < input.length; i++) {
             BinaryStdOut.write(alpha[input[i]], 8);
-            System.arraycopy(alpha, 0, alpha, 1, i);
-            alpha[0] = alpha[input[i]];
+            first = alpha[input[i]];
+            System.arraycopy(alpha, 0, alpha, 1, input[i]);
+            alpha[0] = first;
         }
 
         BinaryStdOut.close();
