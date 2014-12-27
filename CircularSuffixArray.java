@@ -78,9 +78,13 @@ public class CircularSuffixArray {
          * @return int
          */
         public int compareTo(Suffix that) {
-            if (this.index < that.index) return -1;
-            else if (this.index == that.index) return 0;
-            else return 1;
+            for (int n = 0; n < N; n++) {
+                int i = (this.index + n) % N;
+                int j = (that.index + n) % N;
+                if (s.charAt(i) < s.charAt(j)) return -1;
+                else if (s.charAt(i) > s.charAt(j)) return 1;
+            }
+            return 0;
         }
 
         public int getIndex() {
@@ -107,11 +111,11 @@ public class CircularSuffixArray {
      * Unit testing of the methods (optional)
      */
     public static void main(String[] args) {
-        String s = "fsgafsgagafsg";
+        String s = "ABRACADABRA";
         CircularSuffixArray csa = new CircularSuffixArray(s);
-        System.out.printf("%d", csa.length());
+        System.out.printf("%d\n", csa.length());
         for (int i = 0; i < s.length(); i++)
-            System.out.printf("%d", csa.index(i));
+            System.out.printf("%d\n", csa.index(i));
 
     }
 }
