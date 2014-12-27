@@ -46,7 +46,7 @@ import java.util.Arrays;
 public class CircularSuffixArray {
 
     private int N;
-    private String s;
+    private char[] s;
     private Suffix[] suffixes;
 
     /**
@@ -55,8 +55,8 @@ public class CircularSuffixArray {
     public CircularSuffixArray(String s) {
         if (s == null) throw new java.lang.NullPointerException("Empty string");
 
-        this.s = s;
         this.N = s.length();
+        this.s = s.toCharArray();
         suffixes = new Suffix[s.length()];
         for (int i = 0; i < N; i++) {
             suffixes[i] = new Suffix(i);
@@ -78,11 +78,12 @@ public class CircularSuffixArray {
          * @return int
          */
         public int compareTo(Suffix that) {
+            int i, j;
             for (int n = 0; n < N; n++) {
-                int i = (this.index + n) % N;
-                int j = (that.index + n) % N;
-                if (s.charAt(i) < s.charAt(j)) return -1;
-                else if (s.charAt(i) > s.charAt(j)) return 1;
+                i = (this.index + n) % N;
+                j = (that.index + n) % N;
+                if (s[i] < s[j]) return -1;
+                else if (s[i] > s[j]) return 1;
             }
             return 0;
         }
