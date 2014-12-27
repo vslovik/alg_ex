@@ -57,24 +57,15 @@ public class MoveToFront {
         for (char i = 0; i < R; i++)
             alpha[i] = i;
 
-        char i, l;
-
         String s = BinaryStdIn.readString();
         char[] input = s.toCharArray();
 
-        i = input[0];
-        System.arraycopy(alpha, 0, alpha, 1, i);
-        alpha[0] = i;
-        BinaryStdOut.write(i, 8);
-
-        for (l = 1; l < input.length; l++) {
-            for (i = 0; i < alpha.length; i++) {
-                if (alpha[i] == input[l]) {
-                    BinaryStdOut.write(i, 8);
-                    System.arraycopy(alpha, 0, alpha, 1, i);
-                    alpha[0] = input[l];
-                    break;
-                }
+        for (int i = 0; i < input.length; i++) {
+            BinaryStdOut.write(alpha[input[i]]);
+            if (alpha[input[i]] > 0) {
+                for (char k = 0; k < R; k++)
+                    if (alpha[k] < alpha[input[i]]) alpha[k]++;
+                alpha[input[i]] = 0;
             }
         }
 
@@ -102,12 +93,15 @@ public class MoveToFront {
         String s = BinaryStdIn.readString();
         char[] input = s.toCharArray();
 
-        char i, first;
+        char i;
         for (i = 0; i < input.length; i++) {
-            BinaryStdOut.write(alpha[input[i]], 8);
-            first = alpha[input[i]];
-            System.arraycopy(alpha, 0, alpha, 1, input[i]);
-            alpha[0] = first;
+            BinaryStdOut.write(alpha[input[i]]);
+            if (input[i] != 0) {
+                char tmp = alpha[input[i]];
+                for (int k = input[i]; k > 0; k--)
+                    alpha[k] = alpha[k - 1];
+                alpha[0] = tmp;
+            }
         }
 
         BinaryStdOut.close();
